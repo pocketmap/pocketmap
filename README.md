@@ -19,7 +19,7 @@ wget https://download.mapterhorn.com/planet.pmtiles -o /volume1/docker/tiles/pla
 
 I'm running this as a docker container on my NAS devices, and I've scheduled weekly downloads of the latest map data.
 ```bash
-docker run -p 8080:80 -v /volume1/docker/tiles:/usr/share/nginx/html/tiles --name offline-maps gcr.io/dragontek/offline-maps 
+docker run -p 8080:80 -v /volume1/docker/tiles:/usr/share/nginx/html/tiles --name offline-maps gcr.io/jmondragon/offline-maps:main
 ```
 
 ## Roadmap:

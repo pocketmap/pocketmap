@@ -22,8 +22,9 @@ I'm running this as a docker container on my NAS devices, and I've scheduled wee
 docker run -p 8080:80 -v /volume1/docker/tiles:/usr/share/nginx/html/tiles --name offline-maps gcr.io/dragontek/offline-maps 
 ```
 
-##Roadmap:
-[ ] Offline glyphs and fonts
-[ ] Add OpenFreeMap styles with pmtiles
-[ ] Add satellite view in pmtile format
-[ ] Add configurable maps and mapstyles
+## Roadmap:
+
+- [ ] Offline glyphs and fonts
+- [ ] Add OpenFreeMap styles with pmtiles
+- [ ] Add satellite view in pmtile format
+- [ ] Add configurable maps and mapstyles

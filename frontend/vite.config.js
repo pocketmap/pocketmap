@@ -2,13 +2,9 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  // build: {
-  //   outDir: "../pb_public", // build into the pb_public directory
-  //   emptyOutDir: true, // clear the directory before building
-  // },
   server: {
     proxy: {
-      // Proxy requests starting with '/api'
+      // Proxy requests starting to the backend for development
       "/api": {
         target: "http://localhost:8090", // The target backend server
         changeOrigin: true, // Changes the origin of the host header to the target URL

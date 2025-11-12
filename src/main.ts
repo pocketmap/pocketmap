@@ -1,18 +1,28 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { StyleSwitcherControl, type StyleItem } from "map-gl-style-switcher";
+import { StyleSwitcherControl } from "map-gl-style-switcher";
 import "map-gl-style-switcher/dist/map-gl-style-switcher.css";
-//import MaplibreGeocoder, { type MaplibreGeocoderApi } from "@maplibre/maplibre-gl-geocoder";
 import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 import { Protocol } from "pmtiles";
 import "./style.css";
+import PocketBase from "pocketbase";
+
+export const pb = new PocketBase();
 
 let protocol = new Protocol();
 maplibregl.addProtocol("pmtiles", protocol.tile);
-const mapStyles: StyleItem[] = await fetch("/styles.json").then((res) =>
-  res.json()
-);
 
+const mapStyles: any[] = await pb
+  .collection("styles")
+  .getFullList()
+  .then((styles) => {
+    return styles.map((style) => ({
+      ...style,
+      image: pb.files.getURL(style, style.image),
+    }));
+  });
+
+console.log("Available map styles:", mapStyles[0].image);
 let index = mapStyles?.findIndex(
   (i) => i.id === localStorage.getItem("mapStyle")
 );
@@ -26,7 +36,7 @@ const currentStyle = mapStyles?.[index];
 const map = new maplibregl.Map({
   container: "map", // container id
   hash: true,
-  style: currentStyle?.styleUrl,
+  style: currentStyle?.styleUrl || currentStyle?.style, // style URL
   attributionControl: false,
   renderWorldCopies: false,
 });
@@ -37,11 +47,10 @@ const styleSwitcher = new StyleSwitcherControl({
   showLabels: true,
   showImages: true,
   activeStyleId: currentStyle?.id,
-  onBeforeStyleChange: (from, to) => {
-    console.log("Changing style from", from.name, "to", to.name);
-  },
   onAfterStyleChange: (_from, to) => {
-    map.setStyle(to.styleUrl);
+    if (to.styleUrl) map.setStyle(to.styleUrl);
+    // @ts-ignore: Extra property added dynamically
+    else map.setStyle(to.style);
     localStorage.setItem("mapStyle", to.id);
     console.log("Style changed to", to.name);
   },
